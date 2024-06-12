@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  db:
+    image: mysql:latest
+    container_name: sword-health-db
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: Wt3bkKEA9J4wSg
+      MYSQL_DATABASE: task_db
+      MYSQL_USER: sword
+      MYSQL_PASSWORD: c4ii53SVvoBdLu
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data: {}
