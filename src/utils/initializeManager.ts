@@ -14,7 +14,7 @@ export default async function initializeManager() {
 		await prisma.user.create({
 			data: {
 				email,
-				password: bcrypt.hashSync(password, bcrypt.genSaltSync(10)),
+				password: bcrypt.hashSync(password, bcrypt.genSaltSync(parseInt(process.env.SALT_ROUNDS || "10"))),
 				role: "MANAGER",
 			},
 		});
