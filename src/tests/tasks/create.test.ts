@@ -3,11 +3,11 @@ import app from "../../app";
 import {Role, Task} from "@prisma/client";
 import prisma from "../../prisma";
 import bcrypt from "bcrypt";
-import {managerUser, taskList, technicianUser, tooLongSummary} from ".";
+import {managerUser, taskList, technicianUser, tooLongSummary} from "..";
 
-const currentDate = new Date().toISOString();
+const currentDate = "2024-06-13T10:32:06.605Z";
 
-describe("List Tasks", () => {
+describe("Create Tasks", () => {
 	beforeEach(() => {
 		jest.spyOn(prisma.user, "findUnique").mockImplementation((async (query: {where: {id?: number; email?: string}}) => {
 			if (query.where.email === technicianUser.email || query.where.id === technicianUser.id) return technicianUser;
@@ -69,7 +69,7 @@ describe("List Tasks", () => {
 		expect(taskCreateResult.body).toStrictEqual({error: `Please provide a summary with a maximum of 2500 characters!`});
 	});
 
-	it("Fails listing the tasks due to not being logged in", async () => {
+	it("Fails creating the task due to not being logged in", async () => {
 		const taskListResult = await request(app).post("/tasks").send({summary: "This is a summary"});
 		expect(taskListResult.status).toBe(401);
 	});

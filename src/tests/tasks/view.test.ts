@@ -3,9 +3,9 @@ import app from "../../app";
 import {Role} from "@prisma/client";
 import prisma from "../../prisma";
 import bcrypt from "bcrypt";
-import {managerUser, taskList, technicianUser} from ".";
+import {managerUser, taskList, technicianUser} from "..";
 
-describe("List Tasks", () => {
+describe("View Tasks", () => {
 	beforeEach(() => {
 		jest.spyOn(prisma.user, "findUnique").mockImplementation((async (query: {where: {id?: number; email?: string}}) => {
 			if (query.where.email === technicianUser.email || query.where.id === technicianUser.id) return technicianUser;

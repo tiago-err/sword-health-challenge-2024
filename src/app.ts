@@ -63,7 +63,7 @@ app.post("/register", async (req: Request, res: Response) => {
 		});
 	} catch (error) {
 		console.error("Error creating user:", error);
-		return res.status(500).json({error});
+		return res.status(400).json({error: "That e-mail is already in use!"});
 	}
 });
 
