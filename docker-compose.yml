@@ -6,17 +6,27 @@ services:
     container_name: db
     ports:
       - 3306:3306
+    healthcheck:
+      test: mysql ${MYSQL_DB} --user=${MYSQL_USER} --password='${MYSQL_PASS}' --silent --execute "SELECT 1;"
+      interval: 30s
+      timeout: 10s
+      retries: 5
     environment:
-      MYSQL_ROOT_PASSWORD: Wt3bkKEA9J4wSg
-      MYSQL_DATABASE: task_db
-      MYSQL_USER: sword
-      MYSQL_PASSWORD: c4ii53SVvoBdLu
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASS}
+      MYSQL_DATABASE: ${MYSQL_DB}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASS}
     volumes:
       - mysql-data:/var/lib/mysql
   
   rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: rabbitmq
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
     ports:
       - 5672:5672
       - 15672:15672
@@ -28,16 +38,20 @@ services:
     build: .
     container_name: sword-health-challenge
     depends_on:
-      - db
-      - rabbitmq
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     ports:
       - 3000:3000
     environment:
-      - DATABASE_URL="mysql://root:password@db:3306/task_db?allowPublicKeyRetrieval=true"
+      - DATABASE_URL=mysql://${MYSQL_USER}:${MYSQL_PASS}@db:3306/${MYSQL_DB}?allowPublicKeyRetrieval=true
       - RABBITMQ_URL=amqp://rabbitmq:5672
-      - JWT_SECRET=jwt_secret
-      - DEFAULT_MANAGER_EMAIL=manager@email.com
-      - DEFAULT_MANAGER_PASSWORD=SWORD_health-2024
+      - JWT_SECRET=${JWT_SECRET}
+      - DEFAULT_MANAGER_EMAIL=${DEFAULT_MANAGER_EMAIL}
+      - DEFAULT_MANAGER_PASSWORD=${DEFAULT_MANAGER_PASSWORD}
+      - SALT_ROUNDS=${SALT_ROUNDS}
+    command: yarn dev
 
 volumes:
   mysql-data: 

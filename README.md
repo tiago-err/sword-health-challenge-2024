@@ -20,17 +20,17 @@ This is my submission for the exercise, where I used Node.js, Express and Prisma
 ## Deployment
 There are 3 different docker-compose files in this repository, one for the database, one for RabbitMQ and another one that starts all three, including the API, which uses a Dockerfile to build on run.
 
-### Deploy MySQL
+### Deploy just MySQL
 ```
 docker-compose -f db.docker-compose.yml up -d
 ```
 
-### Deploy RabbitMQ
+### Deploy just RabbitMQ
 ```
 docker-compose -f mq.docker-compose.yml up -d
 ```
 
-### Deploy API
+### Deploy all of the needed services for development
 ```
-docker-compose up -d
+docker-compose -f dev.docker-compose.yml up -d
 ```
