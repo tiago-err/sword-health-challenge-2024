@@ -3,12 +3,11 @@ import amqp from "amqplib";
 export async function sendMessage(queue: string, message: string) {
 	let connection;
 	try {
-		connection = await amqp.connect("amqp://localhost");
+		connection = await amqp.connect(process.env.RABBITMQ_URL || "amqp://localhost");
 		const channel = await connection.createChannel();
 
 		await channel.assertQueue(queue, {durable: false});
 		channel.sendToQueue(queue, Buffer.from(message));
-		console.log("MESSAGE SENT");
 		await channel.close();
 	} catch (err) {
 		console.warn(err);
@@ -18,7 +17,7 @@ export async function sendMessage(queue: string, message: string) {
 }
 export async function createMessageReceiver(queue: string, onReceive: (message: amqp.ConsumeMessage | null) => void) {
 	try {
-		const connection = await amqp.connect("amqp://localhost");
+		const connection = await amqp.connect(process.env.RABBITMQ_URL || "amqp://localhost");
 		const channel = await connection.createChannel();
 
 		process.once("SIGINT", async () => {
